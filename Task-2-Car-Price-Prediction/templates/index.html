@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Car Price Predictor</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-900 min-h-screen flex justify-center items-center p-4">
+
+<div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-xl">
+
+    <h1 class="text-4xl font-bold text-center text-white mb-2">
+        🚗 Car Price Predictor
+    </h1>
+
+    <p class="text-gray-300 text-center mb-8">
+        Predict the resale value of your car using Machine Learning
+    </p>
+
+    <form action="/predict" method="POST" class="space-y-4">
+
+        <!-- Company -->
+
+        <select
+            id="company"
+            name="company"
+            class="w-full p-3 rounded-lg text-black"
+            required>
+
+            <option value="">
+                Select Company
+            </option>
+
+            {% for company in companies %}
+            <option value="{{company}}">
+                {{company}}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <!-- Model -->
+
+        <select
+            id="model"
+            name="name"
+            class="w-full p-3 rounded-lg text-black"
+            required>
+
+            <option value="">
+                Select Model
+            </option>
+
+        </select>
+
+        <!-- Year -->
+
+        <input
+            type="number"
+            name="year"
+            placeholder="Manufacturing Year"
+            class="w-full p-3 rounded-lg text-black"
+            required>
+
+        <!-- KM Driven -->
+
+        <input
+            type="number"
+            name="kms_driven"
+            placeholder="Kilometers Driven"
+            class="w-full p-3 rounded-lg text-black"
+            required>
+
+        <!-- Fuel -->
+
+        <select
+            name="fuel_type"
+            class="w-full p-3 rounded-lg text-black"
+            required>
+
+            <option value="">
+                Select Fuel Type
+            </option>
+
+            {% for fuel in fuels %}
+            <option value="{{fuel}}">
+                {{fuel}}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <button
+            type="submit"
+            class="w-full bg-green-500 hover:bg-green-600 text-white font-bold p-3 rounded-lg">
+
+            Predict Price
+
+        </button>
+
+    </form>
+
+    {% if prediction %}
+
+    <div class="mt-8 bg-green-700 rounded-xl p-5 text-white">
+
+        <h2 class="text-2xl font-bold mb-4">
+            Prediction Result
+        </h2>
+
+        <div class="space-y-2">
+
+            <p><strong>Company:</strong> {{selected_company}}</p>
+
+            <p><strong>Model:</strong> {{selected_name}}</p>
+
+            <p><strong>Year:</strong> {{selected_year}}</p>
+
+            <p><strong>Fuel:</strong> {{selected_fuel}}</p>
+
+            <p><strong>KM Driven:</strong> {{selected_km}}</p>
+
+        </div>
+
+        <div class="bg-white text-black mt-5 p-4 rounded-lg text-center">
+
+            <h3 class="text-lg font-bold">
+                Estimated Price
+            </h3>
+
+            <p class="text-4xl font-bold text-green-600 mt-2">
+                {{prediction}}
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+
+const companyModels = {{ company_model_dict | safe }};
+
+const companySelect = document.getElementById("company");
+const modelSelect = document.getElementById("model");
+
+companySelect.addEventListener("change", function() {
+
+    const selectedCompany = this.value;
+
+    modelSelect.innerHTML =
+        '<option value="">Select Model</option>';
+
+    if (!companyModels[selectedCompany]) return;
+
+    companyModels[selectedCompany].forEach(function(model) {
+
+        const option = document.createElement("option");
+
+        option.value = model;
+        option.textContent = model;
+
+        modelSelect.appendChild(option);
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>
